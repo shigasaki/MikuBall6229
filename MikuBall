@@ -1,0 +1,170 @@
+import asyncio
+import random
+from random import choice
+import discord
+from discord.ext import commands, tasks
+
+
+
+# General Variables
+client = commands.Bot(command_prefix = 'm*')
+
+TOKEN = ''
+status = ['m*help', 'with balls', 'shiga-chan likes balls']
+
+
+
+# Help Command Removal
+client.remove_command('help')
+
+
+
+# Status Script
+@tasks.loop(seconds=30)
+async def change_status():
+    await client.change_presence(activity=discord.Game(choice(status)), status=discord.Status.idle)
+
+
+# Event Script
+@client.event
+async def on_ready():
+    change_status.start()
+    print('MikuBall is running.')
+
+
+
+# Error Event
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('**Please include ask me something beside the command**. | コマンドを使用した後にメッセージを含めます。 | 在命令旁边添加一个问题。')
+
+
+
+# Help Script
+@client.group(invoke_without_commmand = True)
+async def help(ctx):
+    em = discord.Embed(title='MikuBall', description='I\'m a bot dressed up as 初音ミク (Hatsune Miku), and also an 8ball that can respond in three languages.', color = discord.Colour.blue())
+
+    em.add_field(name = 'Basic 8ball' , value = '`8ball` | `english` | `8b`')
+    em.add_field(name = '日本語', value='`j8ball` | `japanese` | `jp8b`')
+    em.add_field(name = '中文', value='`ch8ball` | `chinese` | `ch8b`')
+
+    await ctx.send(embed = em)
+
+
+
+# 8ball Scripts
+
+# English 8ball Response List
+@client.command(aliases = ['8ball', '8b', 'english'])
+async def _8ball(ctx, *, question):
+    responses = ['It is certain.',
+                 'It is decidedly so.',
+                 'Without a doubt.',
+                 'Yes - definitely.',
+                 'You may rely on it.',
+                 'As I see it, yes.',
+                 'Most likely.',
+                 'Outlook good.',
+                 'Yes.',
+                 'Signs point to yes.',
+                 'Reply hazy, try again.',
+                 'Ask again later.',
+                 'Better not tell you now.',
+                 'Cannot predict now.',
+                 'Concentrate and ask again.',
+                 'Don\'t count on it.',
+                 'My reply is no.',
+                 'My sources say no.',
+                 'Outlook not so good.',
+                 'Very doubtful.']
+    await ctx.send(f'**The Question Is**: {question}\n**Answer**: {choice(responses)}')
+
+
+
+async def _8ball(ctx, *, question):
+    responses = ['It is certain.',
+                 'It is decidedly so.',
+                 'Without a doubt.',
+                 'Yes - definitely.',
+                 'You may rely on it.',
+                 'As I see it, yes.',
+                 'Most likely.',
+                 'Outlook good.',
+                 'Yes.',
+                 'Signs point to yes.',
+                 'Reply hazy, try again.',
+                 'Ask again later.',
+                 'Better not tell you now.',
+                 'Cannot predict now.',
+                 'Concentrate and ask again.',
+                 'Don\'t count on it.',
+                 'My reply is no.',
+                 'My sources say no.',
+                 'Outlook not so good.',
+                 'Very doubtful.']
+
+    em = discord.Embed(title='My Commands!', description='Hello, Master~! My prefix is: `m)`', color=ctx.author.color)
+
+
+    await ctx.send(f'**The Question Is**: {question}\n**Answer**: {choice(responses)}')
+
+
+
+
+# Japanese 8ball response List
+@client.command(aliases = ['j8b', 'japanese', 'jp8b'])
+async def j8ball(ctx, *, question):
+    j8response = ['確かです。',
+                 '明らかにそうです。',
+                 '疑いなく。',
+                 'うん、間違いなく。',
+                 '頼ることができます。',
+                 '見ているように、そう。',
+                 '最も可能性が高い。',
+                 '見通しは良い。',
+                 'うん。',
+                 '兆候はイエスを指します。',
+                 '分かりませんでした。再試行。',
+                 '後でもう一度聞いてください。',
+                 '今は言わないほうがいい。',
+                 '現在予測できません。',
+                 '集中してもう一度聞いてください。',
+                 '当てにしないで。',
+                 '返事はいいえです。',
+                 '情報源はいいえと言って。',
+                 '見通しはあまり良くありません。',
+                 '疑わしい。']
+    await ctx.send(f'**質問は**: {question}\n**返事**: {choice(j8response)}')
+
+
+
+# Chinese 8ball Response List
+    @client.command(aliases=['ch8b', 'chinese'])
+    async def ch8ball(ctx, *, question):
+        chresponse = ['可以肯定的是。',
+                     '绝对是这样。',
+                     '毫无疑问。',
+                     '当然是。',
+                     '您可以依靠它。',
+                     '如我所见，是的。',
+                     '最有可能的。',
+                     '前景良好。',
+                     '是。',
+                     '迹象表明是。',
+                     '我不明白。再试一次。',
+                     '稍后再问。',
+                     '最好不要现在告诉你。',
+                     '现在无法预测。',
+                     '集中注意力再问一遍。',
+                     '不要指望它。',
+                     '我的答复是不。',
+                     '我的消息来源说不。',
+                     '前景不太好。',
+                     '很可疑。']
+        await ctx.send(f'**问题是**: {question}\n**答**: {choice(chresponse)}')
+
+
+
+client.run(TOKEN)
